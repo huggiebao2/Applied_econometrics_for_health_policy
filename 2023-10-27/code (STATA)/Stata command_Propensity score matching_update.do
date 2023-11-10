@@ -7,7 +7,7 @@
 *============================*
 *Select the relevant data
 *============================*
-use "HISP survey.dta", clear
+use "../data (dta, gph)/HISP survey.dta", clear
 
 *============================*
 *Macros: make sure you run this piece of code before running the regressions
@@ -23,6 +23,7 @@ global controls age_hh age_sp educ_hh educ_sp female_hh indigenous hhsize dirtfl
 * This is called a "wide" dataset.
 
 reshape wide health_expenditures age_hh age_sp educ_hh educ_sp hospital, i(household_identifier) j(round)
+
 *Baseline characteristics now appear twice. Keep only one.
 drop age_hh1 age_sp1 educ_hh1 educ_sp1 hospital1
 rename age_hh0 age_hh
@@ -33,7 +34,8 @@ rename hospital0 hospital
 
 *Estimate the propensity score.
 probit enrolled $controls 
-predict pscore, pr
+predict pscore, pr			/* pscore is a self-define variable name */
+sum pscore
 
 *Draw graph to show region of common support.
 kdensity pscore if enrolled ==1, gen(take1 den1)
